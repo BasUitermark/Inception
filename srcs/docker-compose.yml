@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+    nginx:
+        container_name: nginx
+        build: ./requirements/nginx
+        depends_on:
+            - wordpress
+        restart: unless-stopped
+        volumes:
+          - wordpress_vol:/var/www/html
+        ports: 
+            - 1024:1024
+        env_file:
+            - .env
+        networks:
+            - inception
+    
+    wordpress:
+        container_name: wordpress
+        build: ./requirements/wordpress
+        depends_on:
+            - mariadb
+        restart: unless-stopped
+        volumes:
+          - wordpress_vol:/var/www/html
+        env_file:
+            - .env
+        networks:
+            - inception
+    
+    mariadb:
+        container_name: mariadb
+        build: ./requirements/mariadb
+        restart: unless-stopped
+        volumes:
+          - mariadb_vol:/var/lib/mysql
+        env_file:
+            - .env
+        networks:
+            - inception
+
+volumes:
+    mariadb_vol:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /home/buiterma/Documents/Inception/data/mariadb
+            # device: /home/${LOCAL_USER}/data/mariadb
+    wordpress_vol:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /home/buiterma/Documents/Inception/data/wordpress
+            # device: /home/${LOCAL_USER}/data/wordpress
+
+networks:
+    inception:
+        name: inception
