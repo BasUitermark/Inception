@@ -1,9 +1,8 @@
 FROM debian:bullseye
 
-EXPOSE 1024
+EXPOSE 443
 
-# Update and upgrade packages, then install packages
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update
 RUN apt-get install -y nginx openssl
 
 COPY conf/nginx.conf /etc/nginx/sites-available/nginx.conf
